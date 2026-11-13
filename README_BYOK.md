@@ -10,6 +10,7 @@ Fork of [grammai](https://github.com/zilvestro/grammai) with Bring Your Own Key 
 - Test AI connection pings `{base}/models` through the background worker
 - Settings UI shows custom fields only when provider is Custom
 - Host permissions added for arbitrary OpenAI-compatible endpoints
+- Keyboard shortcuts are fully customizable in Options → Keyboard shortcuts (click a shortcut, press new keys); defaults match the original layout
 
 ## Build
 

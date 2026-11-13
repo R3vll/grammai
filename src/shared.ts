@@ -1,5 +1,10 @@
 import type { Category, Issue } from "./engine";
 import type { LanguageMode, WritingLanguage } from "./language";
+import {
+  defaultShortcuts,
+  sanitizeShortcuts,
+  type Shortcuts,
+} from "./shortcuts";
 export interface CustomPrompt {
   id: string;
   name: string;
@@ -17,10 +22,11 @@ export interface Settings {
   translatePartner: Exclude<WritingLanguage, "en">;
   categories: Record<Category, boolean>;
   aiProvider: "auto" | "claude" | "codex" | "custom";
-  aiModel: string;
-  aiApiKey: string;
-  aiBaseUrl: string;
-}
+    aiModel: string;
+    aiApiKey: string;
+    aiBaseUrl: string;
+    shortcuts: Shortcuts;
+  }
 export const DEFAULT_SETTINGS: Settings = {
   theme: "system",
   customPrompts: [],
@@ -29,7 +35,8 @@ export const DEFAULT_SETTINGS: Settings = {
   aiModel: "",
   aiApiKey: "",
   aiBaseUrl: "",
-  disabledSites: [],
+    shortcuts: defaultShortcuts(),
+    disabledSites: [],
   dictionary: [],
   dialect: "en-US",
   languageMode: "auto",
@@ -45,10 +52,11 @@ export async function getSettings(): Promise<Settings> {
   const stored = await chrome.storage.local.get("settings");
   const settings = stored.settings as Partial<Settings> | undefined;
   return {
-    ...DEFAULT_SETTINGS,
-    ...settings,
-    categories: { ...DEFAULT_SETTINGS.categories, ...settings?.categories },
-  };
+      ...DEFAULT_SETTINGS,
+      ...settings,
+      categories: { ...DEFAULT_SETTINGS.categories, ...settings?.categories },
+      shortcuts: sanitizeShortcuts(settings?.shortcuts),
+    };
 }
 export async function updateSettings(
   patch: Partial<Settings>,
